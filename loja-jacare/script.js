@@ -94,37 +94,15 @@ async function calcularFrete() {
         return;
     }
 
-    if (!rua) {
-        alert('Informe a rua para calcular o frete.');
-        return;
-    }
-
-    if (!numero) {
-        alert('Informe o número da casa para calcular o frete.');
-        return;
-    }
-
-    if (!bairro) {
-        alert('Informe o bairro para calcular o frete.');
-        return;
-    }
-
-    if (!cidade) {
-        alert('Informe a cidade para calcular o frete.');
-        return;
-    }
+    if (!rua) { alert('Informe a rua para calcular o frete.'); return; }
+    if (!numero) { alert('Informe o número da casa para calcular o frete.'); return; }
+    if (!bairro) { alert('Informe o bairro para calcular o frete.'); return; }
+    if (!cidade) { alert('Informe a cidade para calcular o frete.'); return; }
 
     try {
         const btn = document.getElementById('btn-calcular-frete');
-        if (btn) {
-            btn.disabled = true;
-            btn.innerText = 'Calculando...';
-        }
-
-        if (status) {
-            status.innerText = 'Consultando frete...';
-            status.style.color = '#666';
-        }
+        if (btn) { btn.disabled = true; btn.innerText = 'Calculando...'; }
+        if (status) { status.innerText = 'Consultando frete...'; status.style.color = '#666'; }
 
         const geoResponse = await fetch(`/api/geocode?address=${encodeURIComponent(enderecoCompleto)}`);
         const geoData = await geoResponse.json();
@@ -134,12 +112,7 @@ async function calcularFrete() {
             valorFreteAtual = 0;
             freteCalculado = false;
             atualizarTotalComFrete();
-
-            if (status) {
-                status.innerText = geoData?.error || 'Não foi possível localizar o endereço.';
-                status.style.color = '#c62828';
-            }
-
+            if (status) { status.innerText = geoData?.error || 'Não foi possível localizar o endereço.'; status.style.color = '#c62828'; }
             alert(geoData?.error || 'Não foi possível localizar o endereço.');
             return;
         }
@@ -170,12 +143,7 @@ async function calcularFrete() {
             valorFreteAtual = 0;
             freteCalculado = false;
             atualizarTotalComFrete();
-
-            if (status) {
-                status.innerText = 'Falha ao calcular frete.';
-                status.style.color = '#c62828';
-            }
-
+            if (status) { status.innerText = 'Falha ao calcular frete.'; status.style.color = '#c62828'; }
             alert(data?.error || 'Erro ao calcular o frete.');
             return;
         }
@@ -184,23 +152,16 @@ async function calcularFrete() {
             valorFreteAtual = data.shipping;
             freteCalculado = true;
             atualizarTotalComFrete();
-
             if (status) {
                 status.innerText = `Frete calculado: R$ ${data.shipping.toFixed(2).replace('.', ',')}${data.eta ? ` | ETA: ${data.eta}` : ''}`;
                 status.style.color = 'var(--green)';
             }
-
             alert(`🛵 Frete: R$ ${data.shipping.toFixed(2).replace('.', ',')}${data.eta ? ` | ETA: ${data.eta}` : ''}`);
         } else {
             valorFreteAtual = 0;
             freteCalculado = false;
             atualizarTotalComFrete();
-
-            if (status) {
-                status.innerText = 'Não foi possível calcular o frete.';
-                status.style.color = '#c62828';
-            }
-
+            if (status) { status.innerText = 'Não foi possível calcular o frete.'; status.style.color = '#c62828'; }
             alert('Não foi possível calcular o frete.');
         }
     } catch (error) {
@@ -208,19 +169,11 @@ async function calcularFrete() {
         valorFreteAtual = 0;
         freteCalculado = false;
         atualizarTotalComFrete();
-
-        if (status) {
-            status.innerText = 'Erro ao consultar frete.';
-            status.style.color = '#c62828';
-        }
-
+        if (status) { status.innerText = 'Erro ao consultar frete.'; status.style.color = '#c62828'; }
         alert('Erro ao consultar o frete.');
     } finally {
         const btn = document.getElementById('btn-calcular-frete');
-        if (btn) {
-            btn.disabled = false;
-            btn.innerText = '🛵 Calcular frete';
-        }
+        if (btn) { btn.disabled = false; btn.innerText = '🛵 Calcular frete'; }
     }
 }
 
@@ -298,19 +251,13 @@ function buscarProdutos() {
     const categories = document.querySelector('.categories');
     const btnVoltar = document.getElementById('container-busca-voltar');
 
-    if (!termo) {
-        limparBusca();
-        return;
-    }
+    if (!termo) { limparBusca(); return; }
 
     if (hero) hero.style.display = 'none';
     if (categories) categories.style.display = 'none';
     if (btnVoltar) btnVoltar.style.display = 'block';
 
-    const filtrados = produtosLocais.filter(p =>
-        p.nome.toLowerCase().includes(termo)
-    );
-
+    const filtrados = produtosLocais.filter(p => p.nome.toLowerCase().includes(termo));
     renderizarGrids(filtrados);
 }
 
@@ -392,7 +339,7 @@ function ajustarQtdModal(delta) {
     if (novaQtd < 1) return;
     if (produtoAtualModal) {
         const jaNoCarrinho = quantidadeNoCarrinho(produtoAtualModal.id);
-        const estoqueDisponivel = produtoAtualModal.estoque - jaNoCarrinho;
+        const estoqueDisponivel = produtoAtualizado.estoque - jaNoCarrinho;
 
         if (novaQtd > estoqueDisponivel) {
             alert(`🐊 Opa! Só temos ${Math.max(estoqueDisponivel, 0)} unidades disponíveis para adicionar agora.`);
@@ -414,7 +361,7 @@ function confirmarAdicaoAoCarrinho() {
     }
 
     for (let i = 0; i < modalQuantidadeAtual; i++) {
-        carrinho.push({ ...produtoAtualModal, presente: false }); 
+        carrinho.push({ ...produtoAtualModal, presente: false });
     }
     document.getElementById('cart-count').innerText = carrinho.length;
     document.getElementById('modal-area-venda').style.display = 'none';
@@ -461,9 +408,23 @@ function abrirCarrinho() {
     const totalFinal = total + valorFreteAtual;
     document.getElementById('resumo-total-geral').innerText = `R$ ${totalFinal.toFixed(2).replace('.', ',')}`;
 
+    // ✅ BOTÕES DE AÇÃO: WhatsApp + Mercado Pago
     const btn = document.getElementById('modal-btn-acao');
     btn.innerText = '🚀 Finalizar no WhatsApp';
     btn.onclick = finalizarPedido;
+
+    // Adiciona botão do Mercado Pago se ainda não existir
+    let btnMP = document.getElementById('btn-mercado-pago');
+    if (!btnMP) {
+        btnMP = document.createElement('button');
+        btnMP.id = 'btn-mercado-pago';
+        btnMP.className = 'add-btn';
+        btnMP.style.cssText = 'margin-top: 10px; background: #009ee3; display: flex; align-items: center; justify-content: center; gap: 8px;';
+        btnMP.innerHTML = `<img src="https://http2.mlstatic.com/frontend-assets/ui-navigation/5.19.5/mercadopago/logo__large@2x.png" style="height:20px; filter:brightness(0) invert(1);"> Pagar Online`;
+        btnMP.onclick = pagarMercadoPago;
+        btn.parentNode.insertBefore(btnMP, btn.nextSibling);
+    }
+    btnMP.style.display = 'block';
 
     document.getElementById('modal-produto').style.display = 'block';
 }
@@ -479,6 +440,105 @@ function removerDoCarrinho(index) {
     if (carrinho.length === 0) fecharModal();
     else abrirCarrinho();
 }
+
+// =====================================================================
+// ✅ MERCADO PAGO - Cria preferência e redireciona para o checkout
+// =====================================================================
+async function pagarMercadoPago() {
+    const pag = document.getElementById('metodo-pagamento').value;
+    const entrega = document.getElementById('metodo-entrega').value;
+    const endereco = montarEnderecoCompleto();
+
+    if (entrega === 'Entrega') {
+        const rua = document.getElementById('input-endereco')?.value.trim();
+        if (!rua) { alert('Informe o endereço para entrega.'); return; }
+        if (!freteCalculado) { alert('Por favor, calcule o frete antes de pagar.'); return; }
+    }
+
+    if (carrinho.length === 0) { alert('Carrinho vazio!'); return; }
+
+    const btnMP = document.getElementById('btn-mercado-pago');
+    if (btnMP) { btnMP.disabled = true; btnMP.innerHTML = '⏳ Gerando link de pagamento...'; }
+
+    try {
+        const codPedido = 'JAC-' + Math.floor(1000 + Math.random() * 9000);
+
+        // Monta os itens no formato que o backend espera
+        const itensAgrupados = {};
+        carrinho.forEach(item => {
+            if (!itensAgrupados[item.id]) {
+                itensAgrupados[item.id] = { ...item, qtd: 0, presenteQtd: 0 };
+            }
+            itensAgrupados[item.id].qtd++;
+            if (item.presente) itensAgrupados[item.id].presenteQtd++;
+        });
+
+        const totalItens = carrinho.reduce((acc, item) => acc + item.preco, 0);
+        const totalFinal = totalItens + valorFreteAtual;
+
+        // Chama o backend para criar a preferência
+        const response = await fetch('/api/criar-preferencia', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                codPedido,
+                itens: Object.values(itensAgrupados),
+                frete: valorFreteAtual,
+                total: totalFinal,
+                entrega,
+                endereco: entrega === 'Entrega' ? endereco : 'Retirada na loja',
+                pagamento: pag
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.init_point) {
+            alert(data.error || 'Não foi possível gerar o link de pagamento. Tente novamente.');
+            return;
+        }
+
+        // Salva o pedido no Supabase como PENDENTE antes de redirecionar
+        const tokenConfirmacao = crypto.randomUUID();
+        const { error: errPedido } = await supabaseClient.rpc('criar_pedido_com_baixa_estoque', {
+            p_code: codPedido,
+            p_itens: itensAgrupados,
+            p_endereco: entrega === 'Entrega' ? endereco : null,
+            p_frete: valorFreteAtual,
+            p_total: totalFinal,
+            p_status: 'PENDENTE',
+            p_token_confirmacao: tokenConfirmacao
+        });
+
+        if (errPedido) {
+            alert(errPedido.message?.includes('Estoque insuficiente')
+                ? 'Um ou mais itens ficaram sem estoque. Atualize e tente novamente.'
+                : 'Erro ao registrar pedido.');
+            return;
+        }
+
+        // Limpa carrinho e redireciona para o Mercado Pago
+        carrinho = [];
+        valorFreteAtual = 0;
+        freteCalculado = false;
+        document.getElementById('cart-count').innerText = '0';
+        fecharModal();
+
+        // Redireciona para o checkout do Mercado Pago
+        window.location.href = data.init_point;
+
+    } catch (err) {
+        console.error('Erro ao criar preferência MP:', err);
+        alert('Erro ao conectar com o Mercado Pago. Tente novamente.');
+    } finally {
+        if (btnMP) {
+            btnMP.disabled = false;
+            btnMP.innerHTML = `<img src="https://http2.mlstatic.com/frontend-assets/ui-navigation/5.19.5/mercadopago/logo__large@2x.png" style="height:20px; filter:brightness(0) invert(1);"> Pagar Online`;
+        }
+    }
+}
+
+// =====================================================================
 
 async function finalizarPedido() {
     const pag = document.getElementById('metodo-pagamento').value;
@@ -584,6 +644,10 @@ async function finalizarPedido() {
 
 function fecharModal() {
     document.getElementById('modal-produto').style.display = 'none';
+
+    // Esconde o botão MP ao fechar
+    const btnMP = document.getElementById('btn-mercado-pago');
+    if (btnMP) btnMP.style.display = 'none';
 }
 
 function toggleEndereco() {
@@ -640,13 +704,8 @@ function configurarEventosFrete() {
     if (inputComplemento) inputComplemento.addEventListener('input', marcarFreteComoPendente);
     if (inputCidade) inputCidade.addEventListener('change', marcarFreteComoPendente);
 
-    if (metodoEntrega) {
-        metodoEntrega.addEventListener('change', toggleEndereco);
-    }
-
-    if (btnCalcularFrete) {
-        btnCalcularFrete.addEventListener('click', calcularFrete);
-    }
+    if (metodoEntrega) metodoEntrega.addEventListener('change', toggleEndereco);
+    if (btnCalcularFrete) btnCalcularFrete.addEventListener('click', calcularFrete);
 }
 
 carregarProdutos();
